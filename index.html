@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sultanahmet Sofrası</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <h1>Sultanahmet Sofrası</h1>
+  <p class="sub">QR Menü & Sipariş • Ödeme Kasada</p>
+</header>
+
+<div class="table-box">
+  <label>Masa Numaranızı Seçiniz</label>
+  <select id="tableNo" class="table-select">
+    <script>
+      for(let i=1;i<=20;i++){
+        document.write(`<option value="${i}">${i}</option>`);
+      }
+    </script>
+  </select>
+</div>
+
+<div id="menu"></div>
+
+<h2>🤍 Destek Ol</h2>
+<div class="product support">
+  <h3>Talebe İkram Bedeli</h3>
+  <p>250 TL</p>
+  <button onclick="addSupport()">Destek Ol</button>
+</div>
+
+<div class="cart-fixed">
+  <div id="cart"></div>
+  <div class="cart-bottom">
+    <b>Toplam: <span id="total">0</span> TL</b>
+    <button onclick="sendOrder()">Siparişi Gönder</button>
+  </div>
+</div>
+
+<p id="msg"></p>
+
+<!-- 🔥 GOOGLE SHEETS POST FORM -->
+<form id="orderForm"
+  action="https://script.google.com/macros/s/AKfycbzSznWAHN9o4uVXNzBk3LHIDUoiJKOLF5bydp9DQVVaSwTAlnT37y3Y_aI-mziNtItc/exec"
+  method="POST"
+  target="hidden_iframe"
+  style="display:none;">
+
+  <input name="table" id="f_table">
+  <input name="foods" id="f_foods">
+  <input name="support" id="f_support">
+  <input name="total" id="f_total">
+</form>
+
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
+<script src="script.js"></script>
+</body>
+</html>
