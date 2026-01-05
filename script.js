@@ -1,84 +1,155 @@
+/* MENÜ */
 const menuData = [
+
+  /* ÇORBALAR */
   { cat:"Çorbalar", name:"Mercimek Çorbası", price:100 },
-  { cat:"Çorbalar", name:"Paça Çorbası", price:150 },
+  { cat:"Çorbalar", name:"Kelle Çorbası", price:150 },
 
-  { cat:"Ana Yemekler", name:"Sultanahmet Köfte", price:400 },
-  { cat:"Ana Yemekler", name:"Tavuk Şiş", price:250 },
+  /* IZGARA ÇEŞİTLERİ */
+  { cat:"Izgara Çeşitleri", name:"Sultanahmet Köfte Porsiyon", price:400 },
+  { cat:"Izgara Çeşitleri", name:"Sultanahmet Köfte Ekmek Arası", price:350 },
+  { cat:"Izgara Çeşitleri", name:"Tavuk Şiş Porsiyon", price:250 },
+  { cat:"Izgara Çeşitleri", name:"Tavuk Şiş Dürüm", price:225 },
+  { cat:"Izgara Çeşitleri", name:"Tavuk Kanat Porsiyon", price:250 },
+  { cat:"Izgara Çeşitleri", name:"Izgarada Balık Porsiyon", price:300 },
 
-  { cat:"Pideler", name:"Lahmacun", price:100 },
-  { cat:"Pideler", name:"Kaşarlı Pide", price:250 },
+  /* LAHMACUN VE PİDELER */
+  { cat:"Lahmacun ve Pideler", name:"Lahmacun", price:100 },
+  { cat:"Lahmacun ve Pideler", name:"Karışık Pide", price:300 },
+  { cat:"Lahmacun ve Pideler", name:"Kıymalı Pide", price:250 },
+  { cat:"Lahmacun ve Pideler", name:"Kıymalı Kaşarlı Pide", price:250 },
+  { cat:"Lahmacun ve Pideler", name:"Pizza", price:200 },
 
-  { cat:"Tatlılar", name:"Sütlaç", price:200 },
-  { cat:"İçecekler", name:"Ayran", price:35 }
+  /* TATLILAR VE ÇİĞ KÖFTE */
+  { cat:"Tatlılar ve Çiğ Köfte", name:"Sütlaç", price:130 },
+  { cat:"Tatlılar ve Çiğ Köfte", name:"Kabak Tatlısı", price:120 },
+  { cat:"Tatlılar ve Çiğ Köfte", name:"Pasta Çeşitleri (Dilim)", price:100 },
+  { cat:"Tatlılar ve Çiğ Köfte", name:"Çiğ Köfte (Porsiyon)", price:100 },
+
+  /* İÇECEKLER */
+  { cat:"İçecekler", name:"Yayık Ayran", price:35 },
+  { cat:"İçecekler", name:"Limonata", price:30 },
+  { cat:"İçecekler", name:"Osmanlı Şerbeti", price:30 },
+  { cat:"İçecekler", name:"Elvan Gazoz", price:35 }
+
 ];
 
-let cart = [];
+let cart = []; 
+// { name, price, qty }
 
 document.addEventListener("DOMContentLoaded", () => {
   const menu = document.getElementById("menu");
-  let cat = "";
+  let currentCat = "";
 
-  menuData.forEach((i, idx) => {
-    if(i.cat !== cat){
-      cat = i.cat;
-      menu.innerHTML += `<h2>${cat}</h2>`;
+  menuData.forEach((item, i) => {
+    if(item.cat !== currentCat){
+      currentCat = item.cat;
+      menu.innerHTML += `<h2 class="cat">${currentCat}</h2>`;
     }
+
     menu.innerHTML += `
       <div class="product">
-        <h3>${i.name}</h3>
-        <p>${i.price} TL</p>
-        <button onclick="addToCart(${idx})">Ekle</button>
-      </div>`;
+        <div>
+          <h3>${item.name}</h3>
+          <p>${item.price} TL</p>
+        </div>
+        <div class="qty-box">
+          <button onclick="changeQty(${i}, -1)">−</button>
+          <span id="qty-${i}">0</span>
+          <button onclick="changeQty(${i}, 1)">+</button>
+        </div>
+      </div>
+    `;
   });
 });
 
-function addToCart(i){
-  cart.push(menuData[i]);
+/* ➕➖ ADET DEĞİŞTİR */
+function changeQty(index, delta){
+  const item = menuData[index];
+  let found = cart.find(p => p.name === item.name);
+
+  if(!found && delta > 0){
+    cart.push({ name:item.name, price:item.price, qty:1 });
+  } else if(found){
+    found.qty += delta;
+    if(found.qty <= 0){
+      cart = cart.filter(p => p.name !== item.name);
+    }
+  }
+
+  document.getElementById("qty-" + index).innerText =
+    found ? found.qty : 0;
+
   renderCart();
 }
 
+/* 🤍 DESTEK */
 function addSupport(){
-  cart.push({ name:"Talebe İkram Bedeli", price:250 });
+  let found = cart.find(p => p.name === "Talebe İkram Bedeli");
+  if(found){
+    found.qty++;
+  } else {
+    cart.push({ name:"Talebe İkram Bedeli", price:250, qty:1 });
+  }
   renderCart();
 }
 
+/* 🧺 SEPET */
 function renderCart(){
-  let total = 0;
   const box = document.getElementById("cart");
   box.innerHTML = "";
-  cart.forEach(i=>{
-    total += i.price;
-    box.innerHTML += `<p>${i.name} - ${i.price} TL</p>`;
+  let total = 0;
+
+  cart.forEach(p => {
+    total += p.price * p.qty;
+    box.innerHTML += `
+      <p>${p.name} × ${p.qty} = ${p.price * p.qty} TL</p>
+    `;
   });
+
   document.getElementById("total").innerText = total;
 }
 
+/* 📤 SİPARİŞ */
 function sendOrder(){
-  if(cart.length === 0) {
+
+  const person = document.getElementById("personName").value.trim();
+  const table = document.getElementById("tableNo").value;
+
+  if(!person){
+    alert("Siparişi giren kişi zorunlu");
+    return;
+  }
+  if(!table){
+    alert("Masa seçiniz");
+    return;
+  }
+  if(cart.length === 0){
     alert("Sepet boş");
     return;
   }
 
-  const foods = cart.filter(i=>i.name!=="Talebe İkram Bedeli")
-                     .map(i=>i.name)
-                     .join(", ");
+  const foods = cart
+    .filter(p => p.name !== "Talebe İkram Bedeli")
+    .map(p => `${p.name} (${p.qty})`)
+    .join(", ");
 
-  const support = cart.filter(i=>i.name==="Talebe İkram Bedeli").length;
+  const support = cart.find(p => p.name === "Talebe İkram Bedeli");
+  const supportText = support ? (support.qty * 250 + " TL") : "-";
 
-  document.getElementById("f_table").value =
-    document.getElementById("tableNo").value;
-
-  document.getElementById("f_foods").value = foods || "-";
-  document.getElementById("f_support").value =
-    support ? support*250 + " TL" : "-";
+  document.getElementById("f_table").value = table;
+  document.getElementById("f_person").value = person;
+  document.getElementById("f_foods").value = foods;
+  document.getElementById("f_support").value = supportText;
   document.getElementById("f_total").value =
     document.getElementById("total").innerText + " TL";
 
   document.getElementById("orderForm").submit();
 
-  document.getElementById("msg").innerText =
-    "Sipariş mutfağa iletildi ✓";
-  
   cart = [];
   renderCart();
+  document.querySelectorAll("[id^='qty-']").forEach(e => e.innerText = "0");
+
+  document.getElementById("msg").innerText =
+    "Sipariş alındı. Ödeme kasada.";
 }
