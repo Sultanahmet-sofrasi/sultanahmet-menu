@@ -7,11 +7,11 @@ const menuData = [
   { cat:"Çorbalar", name:"Kelle Çorbası", price:150 },
 
   { cat:"Izgara Çeşitleri", name:"Sultanahmet Köfte Porsiyon", price:400 },
-  { cat:"Izgara Çeşitleri", name:"Sultanahmet Köfte Ekmek Arası", price:400 },
+  { cat:"Izgara Çeşitleri", name:"Sultanahmet Köfte Ekmek Arası", price:350 },
   { cat:"Izgara Çeşitleri", name:"Tavuk Şiş Porsiyon", price:250 },
   { cat:"Izgara Çeşitleri", name:"Tavuk Şiş Dürüm", price:225 },
   { cat:"Izgara Çeşitleri", name:"Tavuk Kanat Porsiyon", price:250 },
-  { cat:"Izgara Çeşitleri", name:"Izgarada Balık Porsiyon", price:400 },
+  { cat:"Izgara Çeşitleri", name:"Izgarada Balık Porsiyon", price:300 },
 
   { cat:"Lahmacun ve Pideler", name:"Lahmacun", price:100 },
   { cat:"Lahmacun ve Pideler", name:"Karışık Pide", price:300 },
