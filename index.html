@@ -3,80 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <title>Sultanahmet Sofrası</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="header">
   <h1>Sultanahmet Sofrası</h1>
-  <p class="sub">QR Menü & Sipariş • Ödeme Kasada</p>
+  <p class="sub">QR Menü & Sipariş •</p>
 </header>
 
-<!-- 🧾 SİPARİŞ BİLGİLERİ -->
 <div class="order-info">
-
-  <label>Siparişi Giren (Garson / Müşteri)</label>
-  <input
-    type="text"
-    id="personName"
-    placeholder="Adınızı yazınız"
-    required
-  >
+  <label>Misafir Adı</label>
+  <input id="personName" placeholder="Adınızı yazınız">
 
   <label>Masa Seçiniz</label>
-  <select id="tableNo" required>
+  <select id="tableNo">
     <option value="">Masa Seçiniz</option>
     <option>Kış Bahçesi 1</option>
     <option>Kış Bahçesi 2</option>
     <option>Kış Bahçesi 3</option>
     <option>Kış Bahçesi 4</option>
     <option>Kış Bahçesi 5</option>
-    <option>Şark Sofrası 1</option>
-    <option>Şark Sofrası 2</option>
-    <option>Şark Sofrası 3</option>
-    <option>Şark Sofrası 4</option>
-    <option>Aile Bölümü 1</option>
-    <option>Aile Bölümü 2</option>
-    <option>Aile Bölümü 3</option>
-    <option>Aile Bölümü 4</option>
-    <option>Aile Bölümü 5</option>
-    <option>Aile Bölümü 6</option>
+    <option>Kış Bahçesi 6</option>
+    <option>Kış Bahçesi 7</option>
+    <option>Kış Bahçesi 8</option>
+    <option>Mescid 9</option>
+    <option>Mescid 10</option>
+    <option>Mescid 11</option>
+    <option>Mescid 12</option>
+    <option>Mescid 13</option>
+    <option>Mescid 14</option>
+    <option>Mescid 15</option>
+    <option>Teras 16</option>
+    <option>Teras 17</option>
+    <option>Teras 18</option>
+    <option>Teras 19</option>
+    <option>Teras 20</option>
   </select>
 
+  <label>Sipariş Notu</label>
+  <textarea id="orderNote" rows="3"
+    placeholder="Örn: Lahmacun acısız, köfte paket olsun"></textarea>
 </div>
 
-<!-- 🔴 MENÜ (ÇOK KRİTİK) -->
 <div id="menu"></div>
 
-<h2>🤍 Destek Ol</h2>
-<div class="product support">
-  <h3>Talebe İkram Bedeli</h3>
-  <p>250 TL</p>
-  <button onclick="addSupport()">Destek Ol</button>
-</div>
-
 <div class="cart-fixed">
-  <div id="cart"></div>
-  <div class="cart-bottom">
-    <b>Toplam: <span id="total">0</span> TL</b>
-    <button onclick="sendOrder()">Siparişi Gönder</button>
-  </div>
+  <span><b>Toplam:</b> <span id="total">0</span> TL</span>
+  <button onclick="sendOrder()">Siparişi Gönder</button>
 </div>
 
 <p id="msg"></p>
 
-<!-- 🔥 GOOGLE SHEETS POST FORM -->
-<form id="orderForm"
-  action="https://script.google.com/macros/s/AKfycbxnoB7akQvj1BvvNrODddu1CDtRpzGKQ1Z9pBh05O2wWL1hyyHv6JzyXzqQkSiuCwyE/exec"
+<!-- 🔥 GOOGLE SHEETS FORM -->
+<form
+  id="orderForm"
+  action="https://script.google.com/macros/s/AKfycbza7nK-W_YqEPHeLyu30MfuouzvlgGFRdz9a8Sll9MmHU4V4dmdJCiIgY1wkwtPlmGf/exec"
   method="POST"
   target="hidden_iframe"
-  style="display:none;">
-
+  style="display:none;"
+>
   <input name="table" id="f_table">
-  <input name="foods" id="f_foods">
   <input name="person" id="f_person">
-  <input name="support" id="f_support">
+  <input name="foods" id="f_foods">
+  <input name="note" id="f_note">
   <input name="total" id="f_total">
+  <input name="items" id="f_items">
+
 </form>
 
 <iframe name="hidden_iframe" style="display:none;"></iframe>
