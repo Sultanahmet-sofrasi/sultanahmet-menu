@@ -1,4 +1,3 @@
-
 /* =======================
    🍽️ MENÜ VERİLERİ
 ======================= */
@@ -12,7 +11,7 @@ const menuData = [
   { cat:"Izgara Çeşitleri", name:"Tavuk Şiş Porsiyon", price:250 },
   { cat:"Izgara Çeşitleri", name:"Tavuk Şiş Dürüm", price:225 },
   { cat:"Izgara Çeşitleri", name:"Tavuk Kanat Porsiyon", price:250 },
-  { cat:"Izgara Çeşitleri", name:"Izgarada Balık Porsiyon", price:300 },
+  { cat:"Izgara Çeşitleri", name:"Izgarada Balık Porsiyon", price:400 },
 
   { cat:"Lahmacun ve Pideler", name:"Lahmacun", price:100 },
   { cat:"Lahmacun ve Pideler", name:"Karışık Pide", price:300 },
@@ -116,46 +115,29 @@ function renderTotal(){
    📤 SİPARİŞ GÖNDER
 ======================= */
 
-function sendOrder() {
-
+function sendOrder(){
   const person = personName.value.trim();
   const table  = tableNo.value;
   const note   = orderNote.value.trim();
 
-  if (!person) return alert("İsim gerekli");
-  if (!table) return alert("Masa seçiniz");
-  if (Object.keys(cart).length === 0) return alert("Sepet boş");
+  if(!person) return alert("İsim gerekli");
+  if(!table) return alert("Masa seçiniz");
+  if(Object.keys(cart).length === 0) return alert("Sepet boş");
 
-  const payload = new URLSearchParams({
-    person: person,
-    table: table,
-    note: note || "-",
-    total: total.innerText,
-    items: JSON.stringify(cart)
-  });
+  f_person.value = person;
+  f_table.value  = table;
+  f_note.value   = note || "-";
 
-  fetch("https://script.google.com/macros/s/AKfycbwPzhYvcfynIUpO78-VTljsbpQiticA6YglusYTI6_7ycL9AjWs1xC7d9QOraheG2yJ/exec", {
-    method: "POST",
-    body: payload
-  })
-  .then(() => {
-    msg.innerText =
-      "Siparişiniz alınmıştır. Ödeme kasada yapılacaktır.";
+  document.getElementById("f_items").value =
+  JSON.stringify(cart);
 
-    // 🔄 FORM SIFIRLA
-    personName.value = "";
-    tableNo.value = "";
-    orderNote.value = "";
 
-    cart = {};
-    document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
-    total.innerText = "0";
-  })
-  .catch(err => {
-    alert("Sipariş gönderilemedi. Tekrar deneyin.");
-    console.error(err);
-  });
-}
+  f_total.value = total.innerText + " TL";
+
+  orderForm.submit();
+
+  msg.innerText =
+    "Siparişiniz alınmıştır. Ödeme kış bahçesinde kasada olacaktır.";
 
   // 🔄 FORM ALANLARINI SIFIRLA
   personName.value = "";
@@ -167,4 +149,3 @@ function sendOrder() {
   document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
   total.innerText = "0";
 }
-
