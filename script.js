@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const h = document.createElement("h2");
       h.className = "cat";
       h.innerHTML = `${currentCat} <span>▼</span>`;
-      h.onclick = () => toggleCat(h);
+      h.onclick = () => h.nextElementSibling.classList.toggle("open");
 
       body = document.createElement("div");
       body.className = "cat-body open";
@@ -77,14 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   });
 });
-
-/* =======================
-   🔽 KATEGORİ AÇ / KAPA
-======================= */
-
-function toggleCat(h){
-  h.nextElementSibling.classList.toggle("open");
-}
 
 /* =======================
    ➕➖ ADET
@@ -116,6 +108,7 @@ function renderTotal(){
 ======================= */
 
 function sendOrder(){
+
   const person = personName.value.trim();
   const table  = tableNo.value;
   const note   = orderNote.value.trim();
@@ -124,28 +117,30 @@ function sendOrder(){
   if(!table) return alert("Masa seçiniz");
   if(Object.keys(cart).length === 0) return alert("Sepet boş");
 
-  f_person.value = person;
-  f_table.value  = table;
-  f_note.value   = note || "-";
+  const data = new URLSearchParams();
+  data.append("person", person);
+  data.append("table", table);
+  data.append("note", note || "-");
+  data.append("items", JSON.stringify(cart));
+  data.append("total", total.innerText + " TL");
 
-  document.getElementById("f_items").value =
-  JSON.stringify(cart);
+  fetch("https://script.google.com/macros/s/AKfycbza7nK-W_YqEPHeLyu30MfuouzvlgGFRdz9a8Sll9MmHU4V4dmdJCiIgY1wkwtPlmGf/exec", {
+    method: "POST"
+  , body: data
+  })
+  .then(() => {
 
+    msg.innerText =
+      "Siparişiniz alınmıştır. Ödeme kasada yapılacaktır.";
 
-  f_total.value = total.innerText + " TL";
-
-  orderForm.submit();
-
-  msg.innerText =
-    "Siparişiniz alınmıştır. Ödeme kış bahçesinde kasada olacaktır.";
-
-  // 🔄 FORM ALANLARINI SIFIRLA
-  personName.value = "";
-  tableNo.value = "";
-  orderNote.value = "";
-
-  // 🔄 SEPETİ SIFIRLA
-  cart = {};
-  document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
-  total.innerText = "0";
+    personName.value = "";
+    tableNo.value = "";
+    orderNote.value = "";
+    cart = {};
+    document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
+    total.innerText = "0";
+  })
+  .catch(() => {
+    alert("Sipariş gönderilemedi. Lütfen tekrar deneyin.");
+  });
 }
