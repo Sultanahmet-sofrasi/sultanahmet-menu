@@ -1,8 +1,3 @@
-<script>
-/* =======================
-   🍽️ MENÜ VERİLERİ
-======================= */
-
 const menuData = [
   { cat:"Çorbalar", name:"Mercimek Çorbası", price:100 },
   { cat:"Çorbalar", name:"Kelle Çorbası", price:150 },
@@ -33,10 +28,6 @@ const menuData = [
 
 let cart = {};
 
-/* =======================
-   📋 MENÜ OLUŞTUR
-======================= */
-
 document.addEventListener("DOMContentLoaded", () => {
   const menu = document.getElementById("menu");
   let currentCat = "";
@@ -45,11 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
   menuData.forEach((item, i) => {
     if(item.cat !== currentCat){
       currentCat = item.cat;
-
       const h = document.createElement("h2");
       h.className = "cat";
       h.innerHTML = `${currentCat} <span>▼</span>`;
-      h.onclick = () => body.classList.toggle("open");
+      h.onclick = () => h.nextElementSibling.classList.toggle("open");
 
       body = document.createElement("div");
       body.className = "cat-body open";
@@ -74,21 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/* =======================
-   ➕➖ ADET
-======================= */
-
 function changeQty(i, d){
-  const item = menuData[i];
-  cart[item.name] = (cart[item.name] || 0) + d;
-  if(cart[item.name] <= 0) delete cart[item.name];
-  document.getElementById("q"+i).innerText = cart[item.name] || 0;
+  const name = menuData[i].name;
+  cart[name] = (cart[name] || 0) + d;
+  if(cart[name] <= 0) delete cart[name];
+  document.getElementById("q"+i).innerText = cart[name] || 0;
   renderTotal();
 }
-
-/* =======================
-   💰 TOPLAM
-======================= */
 
 function renderTotal(){
   let t = 0;
@@ -99,44 +81,36 @@ function renderTotal(){
   document.getElementById("total").innerText = t;
 }
 
-/* =======================
-   📤 SİPARİŞ GÖNDER (ÇALIŞAN)
-======================= */
-
 function sendOrder(){
-
-  const person = personName.value.trim();
-  const table  = tableNo.value;
-  const note   = orderNote.value.trim();
-
-  if(!person) return alert("İsim gerekli");
-  if(!table) return alert("Masa seçiniz");
-  if(Object.keys(cart).length === 0) return alert("Sepet boş");
+  if(!personName.value || !tableNo.value || Object.keys(cart).length === 0){
+    alert("Eksik bilgi");
+    return;
+  }
 
   const data = new URLSearchParams();
-  data.append("person", person);
-  data.append("table", table);
-  data.append("note", note || "-");
+  data.append("person", personName.value);
+  data.append("table", tableNo.value);
+  data.append("note", orderNote.value || "-");
   data.append("items", JSON.stringify(cart));
   data.append("total", total.innerText + " TL");
 
   fetch("https://script.google.com/macros/s/AKfycbwm-S1B-61VyNBLqE5umFf3gr8aEShet7hWUVZK1O8wcw7Wes9f6TLKm6yo-ojCfnhZ/exec", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
     body: data
   })
   .then(() => {
-    msg.innerText = "Siparişiniz alınmıştır. Ödeme kasada yapılacaktır.";
+    msg.innerText = "Siparişiniz alınmıştır.";
+    personName.value = "";
+    tableNo.value = "";
+    orderNote.value = "";
+    cart = {};
+    document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
+    total.innerText = "0";
   })
   .catch(() => {
     alert("Sipariş gönderilemedi");
   });
-
-  // FORM & SEPET SIFIRLA
-  personName.value = "";
-  tableNo.value = "";
-  orderNote.value = "";
-  cart = {};
-  document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
-  total.innerText = "0";
 }
-</script>
