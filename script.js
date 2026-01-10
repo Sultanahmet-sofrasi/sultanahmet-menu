@@ -1,3 +1,4 @@
+<script>
 /* =======================
    🍽️ MENÜ VERİLERİ
 ======================= */
@@ -30,10 +31,6 @@ const menuData = [
   { cat:"İçecekler", name:"Elvan Gazoz", price:35 }
 ];
 
-/* =======================
-   🛒 SEPET
-======================= */
-
 let cart = {};
 
 /* =======================
@@ -46,14 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let body;
 
   menuData.forEach((item, i) => {
-
     if(item.cat !== currentCat){
       currentCat = item.cat;
 
       const h = document.createElement("h2");
       h.className = "cat";
       h.innerHTML = `${currentCat} <span>▼</span>`;
-      h.onclick = () => h.nextElementSibling.classList.toggle("open");
+      h.onclick = () => body.classList.toggle("open");
 
       body = document.createElement("div");
       body.className = "cat-body open";
@@ -104,7 +100,7 @@ function renderTotal(){
 }
 
 /* =======================
-   📤 SİPARİŞ GÖNDER
+   📤 SİPARİŞ GÖNDER (ÇALIŞAN)
 ======================= */
 
 function sendOrder(){
@@ -124,14 +120,16 @@ function sendOrder(){
   data.append("items", JSON.stringify(cart));
   data.append("total", total.innerText + " TL");
 
-  fetch("https://script.google.com/macros/s/AKfycbyowgQnC7fbe57nbJONf2CPyM_l_28ks43VfSJiOV5NiITV5CFNIl3XH7b6S4QBxTid/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbwm-S1B-61VyNBLqE5umFf3gr8aEShet7hWUVZK1O8wcw7Wes9f6TLKm6yo-ojCfnhZ/exec", {
     method: "POST",
-    mode: "no-cors",
     body: data
+  })
+  .then(() => {
+    msg.innerText = "Siparişiniz alınmıştır. Ödeme kasada yapılacaktır.";
+  })
+  .catch(() => {
+    alert("Sipariş gönderilemedi");
   });
-
-  msg.innerText =
-    "Siparişiniz alınmıştır. Ödeme kasada yapılacaktır.";
 
   // FORM & SEPET SIFIRLA
   personName.value = "";
@@ -141,5 +139,4 @@ function sendOrder(){
   document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
   total.innerText = "0";
 }
-
-
+</script>
