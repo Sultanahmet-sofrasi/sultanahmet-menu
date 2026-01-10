@@ -124,7 +124,7 @@ function sendOrder(){
   data.append("items", JSON.stringify(cart));
   data.append("total", total.innerText + " TL");
 
-  fetch("https://script.google.com/macros/s/AKfycbza7nK-W_YqEPHeLyu30MfuouzvlgGFRdz9a8Sll9MmHU4V4dmdJCiIgY1wkwtPlmGf/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbyowgQnC7fbe57nbJONf2CPyM_l_28ks43VfSJiOV5NiITV5CFNIl3XH7b6S4QBxTid/exec", {
     method: "POST",
     mode: "no-cors",
     body: data
@@ -141,3 +141,4 @@ function sendOrder(){
   document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
   total.innerText = "0";
 }
+
