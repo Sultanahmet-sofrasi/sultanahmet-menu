@@ -1,3 +1,8 @@
+
+/* =======================
+   🍽️ MENÜ VERİLERİ
+======================= */
+
 const menuData = [
   { cat:"Çorbalar", name:"Mercimek Çorbası", price:100 },
   { cat:"Çorbalar", name:"Kelle Çorbası", price:150 },
@@ -26,7 +31,15 @@ const menuData = [
   { cat:"İçecekler", name:"Elvan Gazoz", price:35 }
 ];
 
+/* =======================
+   🛒 SEPET
+======================= */
+
 let cart = {};
+
+/* =======================
+   📋 MENÜ OLUŞTUR
+======================= */
 
 document.addEventListener("DOMContentLoaded", () => {
   const menu = document.getElementById("menu");
@@ -34,12 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let body;
 
   menuData.forEach((item, i) => {
+
     if(item.cat !== currentCat){
       currentCat = item.cat;
+
       const h = document.createElement("h2");
       h.className = "cat";
       h.innerHTML = `${currentCat} <span>▼</span>`;
-      h.onclick = () => h.nextElementSibling.classList.toggle("open");
+      h.onclick = () => toggleCat(h);
 
       body = document.createElement("div");
       body.className = "cat-body open";
@@ -64,13 +79,29 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+/* =======================
+   🔽 KATEGORİ AÇ / KAPA
+======================= */
+
+function toggleCat(h){
+  h.nextElementSibling.classList.toggle("open");
+}
+
+/* =======================
+   ➕➖ ADET
+======================= */
+
 function changeQty(i, d){
-  const name = menuData[i].name;
-  cart[name] = (cart[name] || 0) + d;
-  if(cart[name] <= 0) delete cart[name];
-  document.getElementById("q"+i).innerText = cart[name] || 0;
+  const item = menuData[i];
+  cart[item.name] = (cart[item.name] || 0) + d;
+  if(cart[item.name] <= 0) delete cart[item.name];
+  document.getElementById("q"+i).innerText = cart[item.name] || 0;
   renderTotal();
 }
+
+/* =======================
+   💰 TOPLAM
+======================= */
 
 function renderTotal(){
   let t = 0;
@@ -81,36 +112,41 @@ function renderTotal(){
   document.getElementById("total").innerText = t;
 }
 
+/* =======================
+   📤 SİPARİŞ GÖNDER
+======================= */
+
 function sendOrder(){
-  if(!personName.value || !tableNo.value || Object.keys(cart).length === 0){
-    alert("Eksik bilgi");
-    return;
-  }
+  const person = personName.value.trim();
+  const table  = tableNo.value;
+  const note   = orderNote.value.trim();
 
-  const data = new URLSearchParams();
-  data.append("person", personName.value);
-  data.append("table", tableNo.value);
-  data.append("note", orderNote.value || "-");
-  data.append("items", JSON.stringify(cart));
-  data.append("total", total.innerText + " TL");
+  if(!person) return alert("İsim gerekli");
+  if(!table) return alert("Masa seçiniz");
+  if(Object.keys(cart).length === 0) return alert("Sepet boş");
 
-  fetch("https://script.google.com/macros/s/AKfycbwm-S1B-61VyNBLqE5umFf3gr8aEShet7hWUVZK1O8wcw7Wes9f6TLKm6yo-ojCfnhZ/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: data
-  })
-  .then(() => {
-    msg.innerText = "Siparişiniz alınmıştır.";
-    personName.value = "";
-    tableNo.value = "";
-    orderNote.value = "";
-    cart = {};
-    document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
-    total.innerText = "0";
-  })
-  .catch(() => {
-    alert("Sipariş gönderilemedi");
-  });
+  f_person.value = person;
+  f_table.value  = table;
+  f_note.value   = note || "-";
+
+  document.getElementById("f_items").value =
+  JSON.stringify(cart);
+
+
+  f_total.value = total.innerText + " TL";
+
+  orderForm.submit();
+
+  msg.innerText =
+    "Siparişiniz alınmıştır. Ödeme kış bahçesinde kasada olacaktır.";
+
+  // 🔄 FORM ALANLARINI SIFIRLA
+  personName.value = "";
+  tableNo.value = "";
+  orderNote.value = "";
+
+  // 🔄 SEPETİ SIFIRLA
+  cart = {};
+  document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
+  total.innerText = "0";
 }
