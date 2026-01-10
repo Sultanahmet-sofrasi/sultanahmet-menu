@@ -125,22 +125,19 @@ function sendOrder(){
   data.append("total", total.innerText + " TL");
 
   fetch("https://script.google.com/macros/s/AKfycbza7nK-W_YqEPHeLyu30MfuouzvlgGFRdz9a8Sll9MmHU4V4dmdJCiIgY1wkwtPlmGf/exec", {
-    method: "POST"
-  , body: data
-  })
-  .then(() => {
-
-    msg.innerText =
-      "Siparişiniz alınmıştır. Ödeme kasada yapılacaktır.";
-
-    personName.value = "";
-    tableNo.value = "";
-    orderNote.value = "";
-    cart = {};
-    document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
-    total.innerText = "0";
-  })
-  .catch(() => {
-    alert("Sipariş gönderilemedi. Lütfen tekrar deneyin.");
+    method: "POST",
+    mode: "no-cors",
+    body: data
   });
+
+  msg.innerText =
+    "Siparişiniz alınmıştır. Ödeme kasada yapılacaktır.";
+
+  // FORM & SEPET SIFIRLA
+  personName.value = "";
+  tableNo.value = "";
+  orderNote.value = "";
+  cart = {};
+  document.querySelectorAll("[id^='q']").forEach(e => e.innerText = "0");
+  total.innerText = "0";
 }
